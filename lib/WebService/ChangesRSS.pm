@@ -2,7 +2,7 @@ package WebService::ChangesRSS;
 
 use strict;
 use warnings;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Carp;
 use LWP::UserAgent;
@@ -100,44 +100,61 @@ __END__
 
 =head1 NAME
 
-WebService::ChangesRSS - Yet Another Updated blogs handler on Weblogs.Com
+WebService::ChangesRSS - Do something with updated blogs on Weblogs.Com, using the RSS which contains blog's updated information.
 
 =head1 SYNOPSIS
 
   use WebService::ChangesRSS;
 
   # Simple API
-  my $changes = WebService::ChangesRSS->new("http://ping.cocolog-nifty.com/changes.rdf");
+  my $changes = WebService::ChangesRSS->new("http://www.weblogs.com/changesRss.xml");
   my $pings   = $changes->find_new_pings(600); # find new blogs updated in 600 seconds
+
+  for my $ping (@$pings) {
+      do_something($ping->{url});
+  }
+
+  # Event based API
+  # do something with new blogs with 300 seconds interval
+  
+  my $changes = WebService::ChangesRSS->new("http://www.weblogs.com/changesRss.xml");
+  $changes->add_handler(\&found_new_ping);
+
+  while (1) {
+      $changes->find_new_pings();
+      sleep 300;
+  }
+
+  sub found_new_ping {
+      my($blog_name, $blog_url, $when) = @_;
+      do_something($blog_url);
+  }
 
 =head1 DESCRIPTION
 
-Stub documentation for WebService::ChangesRSS, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+WebService::ChangesRSS is a module for handling changesRss.xml on Weblogs.com. (or other services that provides information for newly updated blogs with RSS. e.g. http://ping.cocolog-nifty.com/changes.rdf)
 
-Blah blah blah.
+This module has same interfaces as L<WebService::ChangesXml>. Please see the document of L<WebService::ChangesXml>.
 
-=head2 EXPORT
+=head1 NOTICE
 
-None by default.
-
-
+In order to handle newly updated blogs, it is necessary that each items have dc:date or pubDate elements which can express updated time of item in the RSS.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
+L<WebService::ChangesXml>
 
-If you have a mailing list set up for your module, mention it here.
+L<XML::RSS>
 
-If you have a web site set up for your module, mention it here.
+http://newhome.weblogs.com/changesRss
+
+http://www.weblogs.com/changesRss.xml
 
 =head1 AUTHOR
 
-Naoya Ito, E<lt>naoya@localE<gt>
+Naoya Ito, E<lt>naoya@naoya.dyndns.orgE<gt>
+
+Thanks to Tatsuhiko Miyagawa, author of L<WebService::ChangesXml>. This module is almost its copy. ;)
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -146,6 +163,5 @@ Copyright (C) 2004 by Naoya Ito
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.3 or,
 at your option, any later version of Perl 5 you may have available.
-
 
 =cut
