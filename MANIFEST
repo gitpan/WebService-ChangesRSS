@@ -1,0 +1,9 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/00_compile.t
+t/01_event.t
+t/02_simple.t
+lib/WebService/ChangesRSS.pm
+META.yml                                 Module meta-data (added by MakeMaker)

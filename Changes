@@ -1,0 +1,6 @@
+Revision history for Perl extension WebService::ChangesRSS.
+
+0.01  Tue Feb  3 15:44:05 2004
+	- original version; created by h2xs 1.23 with options
+		-A -X -n WebService::ChangesRSS
+
